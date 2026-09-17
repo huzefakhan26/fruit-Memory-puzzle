@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍓 Fruit Memory AI Puzzle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body data-total-levels="{{ total_levels }}">
+
+<!-- floating fruit background, shared by every screen -->
+<div id="fruit-bg"></div>
+
+<!-- ================= WELCOME SCREEN ================= -->
+<section id="screen-welcome" class="screen active">
+  <div class="cat-wrap">
+    <div class="cat">🐱</div>
+    <div class="speech-bubble" id="welcome-bubble">Welcome! Let's play puzzle!</div>
+  </div>
+  <h1 class="title-welcome">WELCOME</h1>
+  <h2 class="title-sub">LET'S PLAY PUZZLE</h2>
+  <button class="btn-bubble btn-play" id="btn-play">PLAY</button>
+</section>
+
+<!-- ================= AUTH MODAL (Sign up / Sign in) ================= -->
+<div id="auth-overlay" class="overlay">
+  <div class="auth-card">
+    <button class="close-x" id="auth-close">✕</button>
+
+    <div id="panel-signup" class="auth-panel">
+      <h2>🍇 Sign Up</h2>
+      <input type="text" id="su-name" placeholder="Name" maxlength="100">
+      <input type="text" id="su-userid" placeholder="User ID" maxlength="50">
+      <input type="password" id="su-password" placeholder="Password">
+      <p class="auth-msg" id="su-msg"></p>
+      <button class="btn-bubble" id="btn-signup">SIGN UP</button>
+      <p class="switch-link">Already have an account?
+        <a href="#" id="go-signin">Sign In</a>
+      </p>
+    </div>
+
+    <div id="panel-signin" class="auth-panel hidden">
+      <h2>🍊 Sign In</h2>
+      <input type="text" id="si-userid" placeholder="User ID" maxlength="50">
+      <input type="password" id="si-password" placeholder="Password">
+      <p class="auth-msg" id="si-msg"></p>
+      <button class="btn-bubble" id="btn-signin">SIGN IN</button>
+      <p class="switch-link">New here?
+        <a href="#" id="go-signup">Sign Up</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ================= LEVEL MAP SCREEN ================= -->
+<section id="screen-levels" class="screen">
+  <div class="topbar">
+    <span id="player-name-tag">🐾 Player</span>
+    <button class="btn-small" id="btn-logout">Logout</button>
+  </div>
+  <div class="cat-wrap small">
+    <div class="cat">🐱</div>
+    <div class="speech-bubble">Select your level!</div>
+  </div>
+  <div id="train-track"></div>
+</section>
+
+<!-- ================= GAME SCREEN ================= -->
+<section id="screen-game" class="screen">
+  <div class="game-hud">
+    <button class="btn-small" id="btn-back-levels">⬅ Levels</button>
+    <div class="hud-item">⭐ Score: <span id="hud-score">0</span></div>
+    <div class="hud-item">🔁 Moves: <span id="hud-moves">0</span></div>
+    <div class="hud-item">💚 Matches: <span id="hud-matches">0</span></div>
+    <div class="hud-item">🔥 Streak: <span id="hud-streak">0</span></div>
+    <div class="hud-item">⏱ <span id="hud-time">00:00</span></div>
+  </div>
+  <h2 id="game-level-title">Level 1</h2>
+  <div id="game-toast"></div>
+  <div id="card-board"></div>
+</section>
+
+<!-- ================= WIN SCREEN ================= -->
+<section id="screen-win" class="screen">
+  <div id="confetti-layer"></div>
+  <div class="cat-wrap">
+    <div class="cat">🐱</div>
+    <div class="speech-bubble">You win! Amazing!</div>
+  </div>
+  <h1 class="title-win">🎉 YOU WIN! 🎉</h1>
+
+  <div class="win-stats">
+    <div><span>Score</span><strong id="win-score">0</strong></div>
+    <div><span>Moves</span><strong id="win-moves">0</strong></div>
+    <div><span>Time</span><strong id="win-time">0s</strong></div>
+    <div><span>Accuracy</span><strong id="win-accuracy">0%</strong></div>
+  </div>
+
+  <div class="ai-coach">
+    <h3>🧠 AI MEMORY COACH</h3>
+    <p>Accuracy: <strong id="ai-accuracy">0%</strong></p>
+    <p>AI Recommendation:</p>
+    <p class="ai-recommendation" id="ai-recommendation">...</p>
+  </div>
+
+  <p class="unlock-msg hidden" id="unlock-msg">🎉 NEW LEVEL UNLOCKED!</p>
+  <button class="btn-bubble" id="btn-to-levels">BACK TO LEVELS</button>
+</section>
+
+<script>
+  const TOTAL_LEVELS = Number(document.body.getAttribute('data-total-levels') || 1);
+</script>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
