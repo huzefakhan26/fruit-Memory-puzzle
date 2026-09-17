@@ -1,14 +1,10 @@
-/* =============================================================
-   Fruit Memory AI Puzzle — script.js
-   ============================================================= */
-
 const FRUITS = ["🍎", "🍌", "🍇", "🍉", "🍓", "🍒", "🍑", "🍍", "🥝", "🍋", "🍊"];
 
 let currentUser  = null;
 let currentLevel = 1;
 let levelsData   = [];
 
-/* ── Speech ──────────────────────────────────────────────────── */
+
 function speak(text) {
   try {
     if (!window.speechSynthesis) return;
@@ -19,15 +15,6 @@ function speak(text) {
     window.speechSynthesis.speak(u);
   } catch (e) { /* speech errors must never crash the game */ }
 }
-
-/* ── Screen switching ────────────────────────────────────────── */
-function showScreen(id) {
-  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-  const el = document.getElementById(id);
-  if (el) el.classList.add("active");
-}
-
-/* ── Floating fruit background ───────────────────────────────── */
 function startFruitBackground() {
   const layer = document.getElementById("fruit-bg");
   if (!layer) return;
@@ -44,7 +31,6 @@ function startFruitBackground() {
   }, 700);
 }
 
-/* ── Auth overlay ────────────────────────────────────────────── */
 function openAuth() {
   document.getElementById("auth-overlay").classList.add("active");
   showAuthPanel("signup");
@@ -57,7 +43,7 @@ function showAuthPanel(which) {
   document.getElementById("panel-signin").classList.toggle("hidden", which !== "signin");
 }
 
-/* ── Sign Up ─────────────────────────────────────────────────── */
+
 async function doSignup() {
   const name     = document.getElementById("su-name").value.trim();
   const user_id  = document.getElementById("su-userid").value.trim();
@@ -95,7 +81,6 @@ async function doSignup() {
   }
 }
 
-/* ── Sign In ─────────────────────────────────────────────────── */
 async function doSignin() {
   const user_id  = document.getElementById("si-userid").value.trim();
   const password = document.getElementById("si-password").value;
@@ -129,7 +114,6 @@ async function doSignin() {
   }
 }
 
-/* ── Logout ──────────────────────────────────────────────────── */
 async function doLogout() {
   try { await fetch("/api/logout", { method: "POST" }); } catch (e) {}
   currentUser = null;
@@ -138,7 +122,6 @@ async function doLogout() {
   speak("Welcome! Let's play puzzle!");
 }
 
-/* ── Level screen ────────────────────────────────────────────── */
 async function goToLevelScreen() {
   showScreen("screen-levels");
   speak("Select your level!");
@@ -156,14 +139,8 @@ async function loadProgress() {
   }
 }
 
-/* ── Board size per level ────────────────────────────────────── */
 function boardSizeForLevel(level) {
-  // Always returns an even total so pairs work correctly.
-  // Level 1-2 : 4×4 (8 pairs)
-  // Level 3-4 : 4×6 (12 pairs)
-  // Level 5-6 : 6×6 (18 pairs)
-  // Level 7-8 : 6×8 (24 pairs)
-  // Level 9-10: 8×8 (32 pairs) – capped so we don't exceed FRUITS pool × 3
+  
   const sizes = [
     { rows: 4, cols: 4 },   // 1
     { rows: 4, cols: 4 },   // 2
@@ -180,7 +157,6 @@ function boardSizeForLevel(level) {
   return sizes[idx];
 }
 
-/* ── Train track (level map) ─────────────────────────────────── */
 function renderTrainTrack(justUnlockedLevel = null) {
   const track = document.getElementById("train-track");
   if (!track) return;
@@ -242,7 +218,6 @@ function renderTrainTrack(justUnlockedLevel = null) {
   }
 }
 
-/* ── Game state ──────────────────────────────────────────────── */
 let board          = [];
 let flippedIndices = [];
 let lockBoard      = false;
@@ -255,7 +230,6 @@ let score          = 0;
 let timerSeconds   = 0;
 let timerInterval  = null;
 
-/* ── Deck builder ────────────────────────────────────────────── */
 function shuffle(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -324,7 +298,7 @@ function startLevel(level) {
   showScreen("screen-game");
 }
 
-/* ── Card click ──────────────────────────────────────────────── */
+
 function onCardClick(index, cardEl) {
   if (lockBoard) return;
   if (board[index].matched) return;
@@ -342,7 +316,6 @@ function onCardClick(index, cardEl) {
   }
 }
 
-/* ── Match checking ──────────────────────────────────────────── */
 function checkForMatch() {
   const [i1, i2] = flippedIndices;
   const card1    = document.querySelector(`.card[data-index="${i1}"]`);
@@ -405,14 +378,14 @@ function checkForMatch() {
   }
 }
 
-/* ── Toast notification ──────────────────────────────────────── */
+
 function toast(text) {
   const el       = document.getElementById("game-toast");
   el.textContent = text;
   setTimeout(() => { if (el.textContent === text) el.textContent = ""; }, 1200);
 }
 
-/* ── Sparkle effect ──────────────────────────────────────────── */
+
 function spawnSparkle(nearEl) {
   const rect         = nearEl.getBoundingClientRect();
   const sparkle      = document.createElement("div");
@@ -426,7 +399,6 @@ function spawnSparkle(nearEl) {
   setTimeout(() => sparkle.remove(), 750);
 }
 
-/* ── Finish level & save result ──────────────────────────────── */
 async function finishLevel() {
   clearInterval(timerInterval);
 
@@ -488,7 +460,6 @@ async function finishLevel() {
   launchConfetti();
 }
 
-/* ── Confetti ────────────────────────────────────────────────── */
 function launchConfetti() {
   const layer  = document.getElementById("confetti-layer");
   const colors = ["#FF6B5C", "#2BB6A6", "#FFA53E", "#FFD9A0", "#4A3B32", "#FFB347"];
@@ -506,7 +477,6 @@ function launchConfetti() {
   }
 }
 
-/* ── DOMContentLoaded — wire everything up ───────────────────── */
 window.addEventListener("DOMContentLoaded", () => {
   startFruitBackground();
   setTimeout(() => speak("Welcome! Let's play puzzle!"), 600);
